@@ -1,0 +1,11 @@
+syntax = "proto3";
+package pb;
+
+message Request {
+    string method = 1;
+    bytes data = 2;
+}
+
+message Response {
+    bytes data = 1;
+}
