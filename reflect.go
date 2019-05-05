@@ -16,13 +16,19 @@ type Func struct {
 	Type 		reflect.Type
 }
 
-var Funcs FuncMap
+var DefalutFuncs FuncMap
 
 func init() {
-	Funcs=make(FuncMap)
+	DefalutFuncs=make(FuncMap)
 }
-
+func New() FuncMap {
+	Funcs:=make(FuncMap)
+	return Funcs
+}
 func Register(obj interface{}) (err error) {
+	return DefalutFuncs.Register(obj)
+}
+func (f FuncMap)Register(obj interface{}) (err error) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = errors.New( " is not callable.")
@@ -47,16 +53,20 @@ func Register(obj interface{}) (err error) {
 			Value:vf.Method(i),
 			Type:method.Type,
 		}
-		Funcs[mName]=Func
+		f[mName]=Func
 	}
 	return nil
 }
 func Call(name string, params ...interface{}) ( err error) {
-	if _, ok := Funcs[name]; !ok {
+	return DefalutFuncs.Call(name,params...)
+}
+
+func (f FuncMap)Call(name string, params ...interface{}) ( err error) {
+	if _, ok := f[name]; !ok {
 		err = errors.New(name + " does not exist.")
 		return
 	}
-	if len(params) != Funcs[name].Value.Type().NumIn() {
+	if len(params) != f[name].Value.Type().NumIn() {
 		err = ErrParamsNotAdapted
 		return
 	}
@@ -64,6 +74,6 @@ func Call(name string, params ...interface{}) ( err error) {
 	for k, param := range params {
 		in[k] = reflect.ValueOf(param)
 	}
-	Funcs[name].Value.Call(in)
+	f[name].Value.Call(in)
 	return
 }
