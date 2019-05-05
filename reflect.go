@@ -3,10 +3,13 @@ package funcs
 import (
 	"errors"
 	"reflect"
+	"log"
 )
 
 var (
 	ErrParamsNotAdapted = errors.New("The number of params is not adapted.")
+	DefalutFuncs FuncMap
+	IsLog =false
 )
 
 type FuncMap map[string]*Func
@@ -15,9 +18,6 @@ type Func struct {
 	Value 		reflect.Value
 	Type 		reflect.Type
 }
-
-var DefalutFuncs FuncMap
-
 func init() {
 	DefalutFuncs=make(FuncMap)
 }
@@ -42,13 +42,13 @@ func (f FuncMap)Register(obj interface{}) (err error) {
 	}
 	vft := vf.Type()
 	mNum := vf.NumMethod()
-	//fmt.Println("NumMethod:", mNum)
+	logPrintln("NumMethod:", mNum)
 	for i := 0; i < mNum; i++ {
 		mName := name+vft.Method(i).Name
-		//fmt.Println("index:", i, " MethodName:", mName)
+		logPrintln("index:", i, " MethodName:", mName)
 		method := typ.Method(i)
-		//mtype := method.Type
-		//fmt.Println(mtype,method.Name,mtype.NumIn,mtype.In(1),mtype.In(2),mtype.NumOut(),mtype.Out(0))
+		mtype := method.Type
+		logPrintln(mtype,method.Name,mtype.NumIn,mtype.In(1),mtype.In(2),mtype.NumOut(),mtype.Out(0))
 		Func:=&Func{
 			Value:vf.Method(i),
 			Type:method.Type,
@@ -76,4 +76,10 @@ func (f FuncMap)Call(name string, params ...interface{}) ( err error) {
 	}
 	f[name].Value.Call(in)
 	return
+}
+
+func logPrintln(args ...interface{}) {
+	if IsLog{
+		log.Println(args...)
+	}
 }
