@@ -3,7 +3,7 @@ package main
 import (
 	"hslam.com/mgit/Mort/funcs"
 	"fmt"
-	"hslam.com/mgit/Mort/funcs/test/pb"
+	"hslam.com/mgit/Mort/funcs/remotetest/pb"
 	"errors"
 	"log"
 	proto "github.com/golang/protobuf/proto"

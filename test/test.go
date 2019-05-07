@@ -1,4 +1,3 @@
-```
 package main
 
 import (
@@ -43,4 +42,3 @@ func main() {
 	fmt.Printf("%d / %d, quo is %d, rem is %d\n", req.A, req.B, res.Quo, res.Rem)
 	}
 
-```
