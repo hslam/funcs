@@ -2,12 +2,20 @@
 ## A simple package to call a function by the function's name
 Call a Struct and its Method given a string with the Struct and its Method's name in Golang
 
-## Usage
-### Here is how you use it:
-First you need to create an instance of the funcs:
+## Get started
+
+### Install
+```
+go get hslam.com/mgit/Mort/funcs
+```
+### Import
 ```
 import "hslam.com/mgit/Mort/funcs"
-
+```
+### Usage
+#### Here is how you use it:
+First you need to create an instance of the funcs:
+```
 Funcs:=funcs.New()
 ```
 Second you need to register your Struct:
@@ -92,13 +100,13 @@ func main() {
 
 ```
 
-### Run Result
+### Output
 ```
 9 * 2 = 18
 9 / 2, quo is 4, rem is 1
 ```
 ### Licence
-This package is licenced under a MIT licence (Copyright (c) 2017 Arne Küderle)
+This package is licenced under a MIT licence (Copyright (c) 2019 Meng Huang)
 
 
 ### Authors
