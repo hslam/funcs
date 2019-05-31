@@ -86,9 +86,8 @@ func main() {
 
 #### Output
 ```
-[funcs] 2017/08/11-20:27:38 || NumMethod: 1
-[funcs] 2017/08/11-20:27:38 || index: 0 || MethodName: Arith.Divide
-[funcs] 2017/08/11-20:27:38 || FuncName: Divide || NumInParam: 2 || NumOutResult: 1
+[funcs] 2017/08/11-20:27:38 || StructName: Arith || NumMethod: 1
+[funcs] 2017/08/11-20:27:38 || MethodIndex: 0 || CallName: Arith.Divide || MethodName: Divide || NumInParam: 2 || NumOutResult: 1
 9 / 2, quo is 4, rem is 1
 ```
 ### Licence

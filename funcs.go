@@ -40,19 +40,19 @@ func (f *Funcs)Register(obj interface{}) (err error) {
 	typ:=reflect.TypeOf(obj)
 	vf := reflect.ValueOf(obj)
 	name := reflect.Indirect(vf).Type().Name()
+	var pname string
 	if len(name)>1{
-		name=name+"."
+		pname=name+"."
 	}
 	vft := vf.Type()
 	mNum := vf.NumMethod()
-	f.logPrintln("NumMethod:", mNum)
+	f.logPrintln("StructName:", name,"|| NumMethod:", mNum)
 	for i := 0; i < mNum; i++ {
-		mName := name+vft.Method(i).Name
-		f.logPrintln("index:", i, "|| MethodName:", mName)
+		mName := pname+vft.Method(i).Name
 		method := typ.Method(i)
 		mtype := method.Type
 		//logPrintln(mtype,method.Name,mtype.NumIn(),mtype.In(0),mtype.In(1),mtype.In(2),mtype.NumOut(),mtype.Out(0))
-		f.logPrintln("FuncName:",method.Name,"|| NumInParam:",mtype.NumIn()-1,"|| NumOutResult:",mtype.NumOut())
+		f.logPrintln("MethodIndex:", i, "|| CallName:", mName,"|| MethodName:",method.Name,"|| NumInParam:",mtype.NumIn()-1,"|| NumOutResult:",mtype.NumOut())
 		Func:=&Func{
 			Value:vf.Method(i),
 			Type:mtype,
