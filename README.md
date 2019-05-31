@@ -38,7 +38,7 @@ if err := Funcs.Call("Service.Method", params...);err != nil {
 ```
 
 
-### Example
+#### Example
 ```
 package main
 import (
@@ -80,7 +80,7 @@ func main() {
 }
 ```
 
-### Output
+#### Output
 ```
 9 / 2, quo is 4, rem is 1
 ```
