@@ -40,9 +40,11 @@ Logging.
 ```
 Funcs.EnabledLog()
 ```
-You can get function's first param.
+You can get function's first param and second param.
 ```
 Funcs.GetFuncIn("Service.Method",0)
+Funcs.GetFuncIn("Service.Method",1)
+//and so on
 ```
 #### Example
 ```
