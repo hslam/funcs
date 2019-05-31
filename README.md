@@ -40,7 +40,10 @@ Logging.
 ```
 Funcs.EnabledLog()
 ```
-
+You can get function's first param.
+```
+Funcs.GetFuncIn("Service.Method",0)
+```
 #### Example
 ```
 package main
