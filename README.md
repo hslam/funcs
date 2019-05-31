@@ -1,6 +1,6 @@
 # funcs
 
-Call a Struct and its Method given a string with the Struct's name and its Method's name in Golang
+Call a Struct and its Method given a string with the Struct and its Method's name in Golang
 
 ## Usage
 ### Here is how you use it:
@@ -97,6 +97,9 @@ func main() {
 9 * 2 = 18
 9 / 2, quo is 4, rem is 1
 ```
+### Licence
+This package is licenced under a MIT licence (Copyright (c) 2017 Arne Küderle)
+
 
 ### Authors
 funcs was written by Mort Huang.
