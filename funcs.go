@@ -103,6 +103,17 @@ func (f *Funcs)GetFunc(name string) (F *Func) {
 	}
 	return
 }
+func GetFuncIn(name string ,i int) interface{} {
+	return DefalutFuncs.GetFuncIn(name,i)
+}
+func (f *Funcs)GetFuncIn(name string,i int) interface{}{
+	index:=i+1
+	F:=f.GetFunc(name)
+	if F==nil||index<1 || index>F.Value.Type().NumIn(){
+		return nil
+	}
+	return reflect.New(F.Type.In(index).Elem()).Interface()
+}
 func EnabledLog() {
 	DefalutFuncs.EnabledLog()
 }
