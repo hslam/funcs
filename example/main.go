@@ -1,7 +1,3 @@
-Call a Struct and its Method given a string with the Struct's name and its Method's name in Golang
-
-Example
-```
 package main
 
 import (
@@ -60,10 +56,3 @@ func main() {
 	}
 }
 
-```
-
-Run Result
-```
-9 * 2 = 18
-9 / 2, quo is 4, rem is 1
-```
