@@ -74,8 +74,8 @@ func main() {
 	Funcs:=funcs.New()
 	Funcs.EnabledLog()
 	Funcs.Register(new(Arith))
-	req := &ArithRequest{A:9,B:2}	//	req := Funcs.GetFuncIn("Arith.Divide",0).(*ArithRequest);req.A=9;req.B=2
-	res :=new(ArithResponse)	//	res :=Funcs.GetFuncIn("Arith.Divide",1).(*ArithResponse)
+	req := &ArithRequest{A:9,B:2}	//req := Funcs.GetFuncIn("Arith.Divide",0).(*ArithRequest);req.A=9;req.B=2
+	res :=new(ArithResponse)	//res :=Funcs.GetFuncIn("Arith.Divide",1).(*ArithResponse)
 	if err := Funcs.Call("Arith.Divide", req, res);err != nil {
 		log.Fatalln("Call Arith.Divide error: ", err)
 		return
