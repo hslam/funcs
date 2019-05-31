@@ -48,7 +48,7 @@ func (f *Funcs)Register(obj interface{}) (err error) {
 	f.logPrintln("NumMethod:", mNum)
 	for i := 0; i < mNum; i++ {
 		mName := name+vft.Method(i).Name
-		f.logPrintln("index:", i, " MethodName:", mName)
+		f.logPrintln("index:", i, "|| MethodName:", mName)
 		method := typ.Method(i)
 		mtype := method.Type
 		//logPrintln(mtype,method.Name,mtype.NumIn(),mtype.In(0),mtype.In(1),mtype.In(2),mtype.NumOut(),mtype.Out(0))
