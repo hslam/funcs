@@ -16,7 +16,7 @@ type Service struct {
 }
 func (this *Service) Method(params ...interface{}) error {
     //to do
-	return nil
+    return nil
 }
 Funcs.Register(new(Service))
 ```
