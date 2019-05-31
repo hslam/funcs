@@ -73,7 +73,7 @@ func main() {
 	req := ArithRequest{A:9,B:2}	//	req := ArithRequest{A:9,B:0}
 	var res ArithResponse
 	if err := Funcs.Call("Arith.Divide", &req, &res);err != nil {
-		log.Fatalln("arith divide error: ", err)
+		log.Fatalln("Call Arith.Divide error: ", err)
 		return
 	}
 	fmt.Printf("%d / %d, quo is %d, rem is %d\n", req.A, req.B, res.Quo, res.Rem)
