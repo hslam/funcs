@@ -2,9 +2,35 @@
 
 Call a Struct and its Method given a string with the Struct's name and its Method's name in Golang
 
-Name Format : "StructName.MethodName"
+## Usage
+### Here is how you use it:
+First you need to create an instance of the funcs:
+```
+import "hslam.com/mgit/Mort/funcs"
 
-## Example
+Funcs:=funcs.New()
+```
+Second you need to register your Struct:
+```
+type Service struct {
+}
+func (this *Service) Method(params ...interface{}) error {
+    //to do
+	return nil
+}
+Funcs.Register(new(Service))
+```
+And now you can call your function by name.
+
+Name Format : "StructName.MethodName"
+```
+if err = Funcs.Call("Service.Method", params...);err != nil {
+    log.Fatalln("Call Service.Method error: ", err)
+}
+```
+
+
+### Example
 ```
 package main
 
@@ -66,7 +92,7 @@ func main() {
 
 ```
 
-## Run Result
+### Run Result
 ```
 9 * 2 = 18
 9 / 2, quo is 4, rem is 1
