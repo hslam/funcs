@@ -22,7 +22,7 @@ Funcs.Register(new(Service))
 ```
 And now you can call your function by name.
 
-Name Format : "StructName.MethodName"
+Function's Name Format : "StructName.MethodName"
 ```
 if err = Funcs.Call("Service.Method", params...);err != nil {
     log.Fatalln("Call Service.Method error: ", err)
@@ -97,3 +97,8 @@ func main() {
 9 * 2 = 18
 9 / 2, quo is 4, rem is 1
 ```
+
+### Authors
+funcs was written by Mort Huang.
+
+
