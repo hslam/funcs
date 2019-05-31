@@ -3,10 +3,12 @@ package funcs
 import (
 	"errors"
 	"reflect"
-	"log"
+	"fmt"
 	"sync"
+	"time"
 )
 
+const LogName  = "funcs"
 var (
 	ErrParamsNotAdapted = errors.New("The number of params is not adapted.")
 	DefalutFuncs *Funcs
@@ -14,7 +16,7 @@ var (
 
 type Funcs struct {
 	m sync.Map
-	IsLog bool
+	isLog bool
 }
 type Func struct {
 	Value 		reflect.Value
@@ -50,7 +52,7 @@ func (f *Funcs)Register(obj interface{}) (err error) {
 		method := typ.Method(i)
 		mtype := method.Type
 		//logPrintln(mtype,method.Name,mtype.NumIn(),mtype.In(0),mtype.In(1),mtype.In(2),mtype.NumOut(),mtype.Out(0))
-		f.logPrintln(mtype,"|| MethodName:",method.Name,"|| NumIn:",mtype.NumIn(),"|| NumOut:",mtype.NumOut())
+		f.logPrintln(mtype,"|| FuncName:",method.Name,"|| NumIn:",mtype.NumIn(),"|| NumOut:",mtype.NumOut())
 		Func:=&Func{
 			Value:vf.Method(i),
 			Type:mtype,
@@ -105,10 +107,13 @@ func EnabledLog() {
 	DefalutFuncs.EnabledLog()
 }
 func (f *Funcs)EnabledLog() {
-	f.IsLog=true
+	f.isLog=true
 }
 func (f *Funcs)logPrintln(args ...interface{}) {
-	if f.IsLog{
-		log.Println(args...)
+	if f.isLog{
+		logargs:=make([]interface{},1)
+		logargs[0]="["+LogName+"] "+time.Now().Format("2006/01/02-15:04:05")+" ||"
+		logargs=append(logargs,args...)
+		fmt.Println(logargs...)
 	}
 }
