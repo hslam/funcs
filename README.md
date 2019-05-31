@@ -36,7 +36,10 @@ if err := Funcs.Call("Service.Method", params...);err != nil {
     log.Fatalln("Call Service.Method error: ", err)
 }
 ```
-
+Logging.
+```
+Funcs.EnabledLog()
+```
 
 #### Example
 ```
@@ -69,6 +72,7 @@ func (this *Arith) Divide(req *ArithRequest, res *ArithResponse) error {
 
 func main() {
 	Funcs:=funcs.New()
+	Funcs.EnabledLog()
 	Funcs.Register(new(Arith))
 	req := ArithRequest{A:9,B:2}	//	req := ArithRequest{A:9,B:0}
 	var res ArithResponse
@@ -82,10 +86,13 @@ func main() {
 
 #### Output
 ```
+[funcs] 2017/08/11-20:27:38 || NumMethod: 1
+[funcs] 2017/08/11-20:27:38 || index: 0  MethodName: Arith.Divide
+[funcs] 2017/08/11-20:27:38 || func(*main.Arith, *main.ArithRequest, *main.ArithResponse) error || FuncName: Divide || NumIn: 3 || NumOut: 1
 9 / 2, quo is 4, rem is 1
 ```
 ### Licence
-This package is licenced under a MIT licence (Copyright (c) 2018 Mort Huang)
+This package is licenced under a MIT licence (Copyright (c) 2017 Mort Huang)
 
 
 ### Authors
