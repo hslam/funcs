@@ -32,7 +32,7 @@ And now you can call your function by name.
 
 Function's Name Format : "StructName.MethodName"
 ```
-if err = Funcs.Call("Service.Method", params...);err != nil {
+if err := Funcs.Call("Service.Method", params...);err != nil {
     log.Fatalln("Call Service.Method error: ", err)
 }
 ```
