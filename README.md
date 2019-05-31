@@ -52,13 +52,16 @@ type ArithRequest struct {
 	B int
 }
 type ArithResponse struct {
-	Quo int // quotient
-	Rem int // remainder
+	Quo int		// quotient
+	Rem int		// remainder
 }
 
-type Arith struct {}
+type Arith struct {
+}
 func (this *Arith) Divide(req *ArithRequest, res *ArithResponse) error {
-	if req.B == 0 {return errors.New("divide by zero")}
+	if req.B == 0 {
+		return errors.New("divide by zero")
+	}
 	res.Quo = req.A / req.B
 	res.Rem = req.A % req.B
 	return nil
@@ -67,7 +70,7 @@ func (this *Arith) Divide(req *ArithRequest, res *ArithResponse) error {
 func main() {
 	Funcs:=funcs.New()
 	Funcs.Register(new(Arith))
-	req := ArithRequest{A:9,B:2}
+	req := ArithRequest{A:9,B:2}	//	req := ArithRequest{A:9,B:0}
 	var res ArithResponse
 	if err := Funcs.Call("Arith.Divide", &req, &res);err != nil {
 		log.Fatalln("arith divide error: ", err)

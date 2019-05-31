@@ -10,11 +10,11 @@ import (
 var (
 	ErrParamsNotAdapted = errors.New("The number of params is not adapted.")
 	DefalutFuncs *Funcs
-	IsLog =false
 )
 
 type Funcs struct {
 	m sync.Map
+	IsLog bool
 }
 type Func struct {
 	Value 		reflect.Value
@@ -43,18 +43,18 @@ func (f *Funcs)Register(obj interface{}) (err error) {
 	}
 	vft := vf.Type()
 	mNum := vf.NumMethod()
-	logPrintln("NumMethod:", mNum)
+	f.logPrintln("NumMethod:", mNum)
 	for i := 0; i < mNum; i++ {
 		mName := name+vft.Method(i).Name
-		logPrintln("index:", i, " MethodName:", mName)
+		f.logPrintln("index:", i, " MethodName:", mName)
 		method := typ.Method(i)
 		mtype := method.Type
-		logPrintln(mtype,method.Name,mtype.NumIn,mtype.In(1),mtype.In(2),mtype.NumOut(),mtype.Out(0))
+		//logPrintln(mtype,method.Name,mtype.NumIn(),mtype.In(0),mtype.In(1),mtype.In(2),mtype.NumOut(),mtype.Out(0))
+		f.logPrintln(mtype,"|| MethodName:",method.Name,"|| NumIn:",mtype.NumIn(),"|| NumOut:",mtype.NumOut())
 		Func:=&Func{
 			Value:vf.Method(i),
-			Type:method.Type,
+			Type:mtype,
 		}
-		//f[mName]=Func
 		f.m.Store(mName,Func)
 	}
 	return nil
@@ -77,8 +77,21 @@ func (f *Funcs)Call(name string, params ...interface{}) ( err error) {
 	for k, param := range params {
 		in[k] = reflect.ValueOf(param)
 	}
+	if F.Value.Type().NumOut()>0 {
+		if F.Value.Type().Out(0).Name()=="error"{
+			vs:=F.Value.Call(in)
+			if vs[0].IsNil(){
+				return nil
+			}else {
+				return vs[0].Interface().(error)
+			}
+		}
+	}
 	F.Value.Call(in)
 	return
+}
+func GetFunc(name string) (F *Func) {
+	return DefalutFuncs.GetFunc(name)
 }
 func (f *Funcs)GetFunc(name string) (F *Func) {
 	if v, ok := f.m.Load(name); !ok {
@@ -88,8 +101,14 @@ func (f *Funcs)GetFunc(name string) (F *Func) {
 	}
 	return
 }
-func logPrintln(args ...interface{}) {
-	if IsLog{
+func EnabledLog() {
+	DefalutFuncs.EnabledLog()
+}
+func (f *Funcs)EnabledLog() {
+	f.IsLog=true
+}
+func (f *Funcs)logPrintln(args ...interface{}) {
+	if f.IsLog{
 		log.Println(args...)
 	}
 }
