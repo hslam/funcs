@@ -52,7 +52,7 @@ func (f *Funcs)Register(obj interface{}) (err error) {
 		method := typ.Method(i)
 		mtype := method.Type
 		//logPrintln(mtype,method.Name,mtype.NumIn(),mtype.In(0),mtype.In(1),mtype.In(2),mtype.NumOut(),mtype.Out(0))
-		f.logPrintln(mtype,"|| FuncName:",method.Name,"|| NumIn:",mtype.NumIn(),"|| NumOut:",mtype.NumOut())
+		f.logPrintln(mtype,"|| FuncName:",method.Name,"|| NumInParam:",mtype.NumIn(),"|| NumOutResult:",mtype.NumOut())
 		Func:=&Func{
 			Value:vf.Method(i),
 			Type:mtype,
