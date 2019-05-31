@@ -1,5 +1,7 @@
 Call a Struct and its Method given a string with the Struct's name and its Method's name in Golang
 
+Name Format : "StructName.MethodName"
+
 Example
 ```
 package main
