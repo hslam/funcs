@@ -1,5 +1,5 @@
 # funcs
-
+##A simple package to call a function by the function's name
 Call a Struct and its Method given a string with the Struct and its Method's name in Golang
 
 ## Usage
