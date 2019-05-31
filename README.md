@@ -82,7 +82,6 @@ func main() {
 
 ### Output
 ```
-9 * 2 = 18
 9 / 2, quo is 4, rem is 1
 ```
 ### Licence
