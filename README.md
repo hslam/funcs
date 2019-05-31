@@ -106,7 +106,7 @@ func main() {
 9 / 2, quo is 4, rem is 1
 ```
 ### Licence
-This package is licenced under a MIT licence (Copyright (c) 2019 Meng Huang)
+This package is licenced under a MIT licence (Copyright (c) 2019 Mort Huang)
 
 
 ### Authors
