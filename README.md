@@ -6,11 +6,11 @@ Call a Struct and its Method given a string with the Struct and its Method's nam
 
 ### Install
 ```
-go get hslam.com/mgit/Mort/funcs
+go get hslam.com/git/x/funcs
 ```
 ### Import
 ```
-import "hslam.com/mgit/Mort/funcs"
+import "hslam.com/git/x/funcs"
 ```
 ### Usage
 #### Here is how you use it:
@@ -50,7 +50,7 @@ Funcs.GetFuncIn("Service.Method",1)
 ```
 package main
 import (
-	"hslam.com/mgit/Mort/funcs"
+	"hslam.com/git/x/funcs"
 	"fmt"
 	"errors"
 	"log"
