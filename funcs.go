@@ -9,6 +9,7 @@ import (
 )
 
 const LogName  = "funcs"
+
 var (
 	ErrParamsNotAdapted = errors.New("The number of params is not adapted.")
 	DefalutFuncs *Funcs
@@ -18,20 +19,33 @@ type Funcs struct {
 	m sync.Map
 	isLog bool
 }
+
 type Func struct {
 	Value 		reflect.Value
 	Type 		reflect.Type
 }
+
 func init() {
-	DefalutFuncs=new(Funcs)
+	DefalutFuncs=New()
 }
+
 func New() *Funcs {
 	return new(Funcs)
 }
+
 func Register(obj interface{}) (err error) {
-	return DefalutFuncs.Register(obj)
+	return DefalutFuncs.RegisterName("",obj)
 }
+
 func (f *Funcs)Register(obj interface{}) (err error) {
+	return f.RegisterName("",obj)
+}
+
+func RegisterName(name string, obj interface{}) error {
+	return DefalutFuncs.RegisterName(name, obj)
+}
+
+func (f *Funcs)RegisterName(name string,obj interface{}) (err error) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = errors.New( " is not callable.")
@@ -39,9 +53,11 @@ func (f *Funcs)Register(obj interface{}) (err error) {
 	}()
 	typ:=reflect.TypeOf(obj)
 	vf := reflect.ValueOf(obj)
-	name := reflect.Indirect(vf).Type().Name()
+	if name==""{
+		name = reflect.Indirect(vf).Type().Name()
+	}
 	var pname string
-	if len(name)>1{
+	if len(name)>0{
 		pname=name+"."
 	}
 	vft := vf.Type()
@@ -61,6 +77,7 @@ func (f *Funcs)Register(obj interface{}) (err error) {
 	}
 	return nil
 }
+
 func Call(name string, params ...interface{}) ( err error) {
 	return DefalutFuncs.Call(name,params...)
 }
@@ -92,9 +109,11 @@ func (f *Funcs)Call(name string, params ...interface{}) ( err error) {
 	F.Value.Call(in)
 	return
 }
+
 func GetFunc(name string) (F *Func) {
 	return DefalutFuncs.GetFunc(name)
 }
+
 func (f *Funcs)GetFunc(name string) (F *Func) {
 	if v, ok := f.m.Load(name); !ok {
 		return
@@ -103,9 +122,11 @@ func (f *Funcs)GetFunc(name string) (F *Func) {
 	}
 	return
 }
+
 func GetFuncIn(name string ,i int) interface{} {
 	return DefalutFuncs.GetFuncIn(name,i)
 }
+
 func (f *Funcs)GetFuncIn(name string,i int) interface{}{
 	index:=i+1
 	F:=f.GetFunc(name)
@@ -114,12 +135,15 @@ func (f *Funcs)GetFuncIn(name string,i int) interface{}{
 	}
 	return reflect.New(F.Type.In(index).Elem()).Interface()
 }
+
 func EnabledLog() {
 	DefalutFuncs.EnabledLog()
 }
+
 func (f *Funcs)EnabledLog() {
 	f.isLog=true
 }
+
 func (f *Funcs)logPrintln(args ...interface{}) {
 	if f.isLog{
 		logargs:=make([]interface{},1)
