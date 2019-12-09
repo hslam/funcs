@@ -1,6 +1,6 @@
 package main
 import (
-	"hslam.com/git/x/funcs"
+	"github.com/hslam/funcs"
 	"fmt"
 	"errors"
 	"log"
