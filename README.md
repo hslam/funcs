@@ -91,15 +91,15 @@ func main() {
 
 #### Output
 ```
-[funcs] 2017/08/11-20:27:38 || StructName: Arith || NumMethod: 1
-[funcs] 2017/08/11-20:27:38 || MethodIndex: 0 || CallName: Arith.Divide || MethodName: Divide || NumInParam: 2 || NumOutResult: 1
+[funcs] 2019/08/11-20:27:38 || StructName: Arith || NumMethod: 1
+[funcs] 2019/08/11-20:27:38 || MethodIndex: 0 || CallName: Arith.Divide || MethodName: Divide || NumInParam: 2 || NumOutResult: 1
 9 / 2, quo is 4, rem is 1
 ```
 ### Licence
-This package is licenced under a MIT licence (Copyright (c) 2017 Mort Huang)
+This package is licenced under a MIT licence (Copyright (c) 2019 Meng Huang)
 
 
 ### Authors
-funcs was written by Mort Huang.
+funcs was written by Meng Huang.
 
 
