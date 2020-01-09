@@ -7,7 +7,7 @@
 [![GitHub release](https://img.shields.io/github/release/hslam/funcs.svg)](https://github.com/hslam/funcs/releases/latest)
 [![LICENSE](https://img.shields.io/github/license/hslam/funcs.svg?style=flat-square)](https://github.com/hslam/funcs/blob/master/LICENSE)
 
-Call a function by the function's name in golang.
+Function call by its name in Golang
 ## Get started
 
 ### Install
