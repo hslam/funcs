@@ -6,6 +6,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/hslam/funcs)](https://goreportcard.com/report/github.com/hslam/funcs)
 [![GitHub release](https://img.shields.io/github/release/hslam/funcs.svg)](https://github.com/hslam/funcs/releases/latest)
 [![LICENSE](https://img.shields.io/github/license/hslam/funcs.svg?style=flat-square)](https://github.com/hslam/funcs/blob/master/LICENSE)
+
 Call a function by the function's name in golang.
 ## Get started
 
