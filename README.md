@@ -7,7 +7,7 @@
 [![GitHub release](https://img.shields.io/github/release/hslam/funcs.svg)](https://github.com/hslam/funcs/releases/latest)
 [![LICENSE](https://img.shields.io/github/license/hslam/funcs.svg?style=flat-square)](https://github.com/hslam/funcs/blob/master/LICENSE)
 
-Function call by its name in Golang
+Call a function by the function's name in golang.
 ## Get started
 
 ### Install
@@ -19,12 +19,11 @@ go get github.com/hslam/funcs
 import "github.com/hslam/funcs"
 ```
 ### Usage
-#### Here is how you use it:
-First you need to create an instance of the funcs:
+First create an instance of the funcs:
 ```
 Funcs:=funcs.New()
 ```
-Second you need to register your Struct:
+Then register your Struct:
 ```
 type Service struct {
 }
@@ -34,7 +33,7 @@ func (s *Service) Method(params ...interface{}) error {
 }
 Funcs.Register(new(Service))
 ```
-And now you can call your function by name.
+And then call your function by name.
 
 Function's Name Format : "StructName.MethodName"
 ```
