@@ -5,24 +5,29 @@ import (
 	"testing"
 )
 
+//ArithRequest is the first input parameter.
 type ArithRequest struct {
 	A int
 	B int
 }
 
+//ArithResponse is the second input parameter.
 type ArithResponse struct {
 	Pro int // product
 	Quo int // quotient
 	Rem int // remainder
 }
 
+//Arith is the Service struct.
 type Arith struct {
 }
 
+//Multiply is the Arith's Method.
 func (a *Arith) Multiply(req *ArithRequest, res *ArithResponse) {
 	res.Pro = req.A * req.B
 }
 
+//Divide is the Arith's Method.
 func (a *Arith) Divide(req *ArithRequest, res *ArithResponse) error {
 	if req.B == 0 {
 		return errors.New("divide by zero")

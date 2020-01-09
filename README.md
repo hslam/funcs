@@ -63,19 +63,23 @@ import (
 	"log"
 )
 
+//ArithRequest is the first input parameter.
 type ArithRequest struct {
 	A int
 	B int
 }
 
+//ArithResponse is the second input parameter.
 type ArithResponse struct {
 	Quo int // quotient
 	Rem int // remainder
 }
 
+//Arith is the Service struct.
 type Arith struct {
 }
 
+//Divide is the Arith's Method.
 func (a *Arith) Divide(req *ArithRequest, res *ArithResponse) error {
 	if req.B == 0 {
 		return errors.New("divide by zero")
