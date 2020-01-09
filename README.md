@@ -1,7 +1,12 @@
 # funcs
-## A simple go package to call a function by the function's name
-Call a Struct and its Method given a string with the Struct and its Method's name in Golang
-
+[![GoDoc](https://godoc.org/github.com/hslam/funcs?status.svg)](https://godoc.org/github.com/hslam/funcs)
+[![Build Status](https://travis-ci.org/hslam/funcs.svg?branch=master)](https://travis-ci.org/hslam/funcs)
+[![linux](https://github.com/hslam/funcs/workflows/linux/badge.svg)](https://github.com/hslam/funcs/actions)
+[![codecov](https://codecov.io/gh/hslam/funcs/branch/master/graph/badge.svg)](https://codecov.io/gh/hslam/funcs)
+[![Go Report Card](https://goreportcard.com/badge/github.com/hslam/funcs)](https://goreportcard.com/report/github.com/hslam/funcs)
+[![GitHub release](https://img.shields.io/github/release/hslam/funcs.svg)](https://github.com/hslam/funcs/releases/latest)
+[![LICENSE](https://img.shields.io/github/license/hslam/funcs.svg?style=flat-square)](https://github.com/hslam/funcs/blob/master/LICENSE)
+Call a function by the function's name in golang.
 ## Get started
 
 ### Install
@@ -22,7 +27,7 @@ Second you need to register your Struct:
 ```
 type Service struct {
 }
-func (this *Service) Method(params ...interface{}) error {
+func (s *Service) Method(params ...interface{}) error {
     //to do
     return nil
 }
@@ -38,9 +43,9 @@ if err := Funcs.Call("Service.Method", params...);err != nil {
 ```
 Logging.
 ```
-Funcs.EnabledLog()
+Funcs.SetLog(true)
 ```
-You can get function's first param and second param.
+if a function has 2 input parameters ,You can get the function's first input parameter and second input parameter.
 ```
 Funcs.GetFuncIn("Service.Method",0)
 Funcs.GetFuncIn("Service.Method",1)
@@ -49,24 +54,28 @@ Funcs.GetFuncIn("Service.Method",1)
 #### Example
 ```
 package main
+
 import (
-	"github.com/hslam/funcs"
-	"fmt"
 	"errors"
+	"fmt"
+	"github.com/hslam/funcs"
 	"log"
 )
+
 type ArithRequest struct {
 	A int
 	B int
 }
+
 type ArithResponse struct {
-	Quo int		// quotient
-	Rem int		// remainder
+	Quo int // quotient
+	Rem int // remainder
 }
 
 type Arith struct {
 }
-func (this *Arith) Divide(req *ArithRequest, res *ArithResponse) error {
+
+func (a *Arith) Divide(req *ArithRequest, res *ArithResponse) error {
 	if req.B == 0 {
 		return errors.New("divide by zero")
 	}
@@ -76,12 +85,24 @@ func (this *Arith) Divide(req *ArithRequest, res *ArithResponse) error {
 }
 
 func main() {
-	Funcs:=funcs.New()
-	Funcs.EnabledLog()
+	Funcs := funcs.New()
+	Funcs.SetLog(true)
+
+	//Funcs.RegisterName("Arith",new(Arith))
 	Funcs.Register(new(Arith))
-	req := &ArithRequest{A:9,B:2}	//req := Funcs.GetFuncIn("Arith.Divide",0).(*ArithRequest);req.A=9;req.B=2
-	res :=new(ArithResponse)	//res :=Funcs.GetFuncIn("Arith.Divide",1).(*ArithResponse)
-	if err := Funcs.Call("Arith.Divide", req, res);err != nil {
+
+	f := Funcs.GetFunc("Arith.Divide")
+	fmt.Printf("num of args : %d\n", f.NumIn())
+
+	//req := &ArithRequest{A: 9, B: 2}
+	req := Funcs.GetFuncIn("Arith.Divide", 0).(*ArithRequest)
+	req.A = 9
+	req.B = 2
+
+	//res := &ArithResponse{}
+	res := Funcs.GetFuncIn("Arith.Divide", 1).(*ArithResponse)
+
+	if err := Funcs.Call("Arith.Divide", req, res); err != nil {
 		log.Fatalln("Call Arith.Divide error: ", err)
 		return
 	}
@@ -91,8 +112,9 @@ func main() {
 
 #### Output
 ```
-[funcs] 2019/08/11-20:27:38 || StructName: Arith || NumMethod: 1
-[funcs] 2019/08/11-20:27:38 || MethodIndex: 0 || CallName: Arith.Divide || MethodName: Divide || NumInParam: 2 || NumOutResult: 1
+[funcs] 2020/01/09 10:12:19.065121 StructName:Arith,NumMethod:1
+[funcs] 2020/01/09 10:12:19.065246 MethodIndex:0,CallName:Arith.Divide,NumIn:2,NumOut:1
+num of args : 2
 9 / 2, quo is 4, rem is 1
 ```
 ### Licence
