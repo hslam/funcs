@@ -6,7 +6,7 @@
 [![GitHub release](https://img.shields.io/github/release/hslam/funcs.svg)](https://github.com/hslam/funcs/releases/latest)
 [![LICENSE](https://img.shields.io/github/license/hslam/funcs.svg?style=flat-square)](https://github.com/hslam/funcs/blob/master/LICENSE)
 
-Call a function by the function's name in golang.
+Function call by its name in golang
 ## Get started
 
 ### Install
@@ -18,6 +18,7 @@ go get github.com/hslam/funcs
 import "github.com/hslam/funcs"
 ```
 ### Usage
+#### Here is how you use it:
 First create an instance of the funcs:
 ```
 Funcs:=funcs.New()
@@ -120,8 +121,8 @@ func main() {
 num of args : 2
 9 / 2, quo is 4, rem is 1
 ```
-### Licence
-This package is licenced under a MIT licence (Copyright (c) 2019 Meng Huang)
+### License
+This package is licensed under a MIT license (Copyright (c) 2019 Meng Huang)
 
 
 ### Authors
