@@ -18,7 +18,6 @@ go get github.com/hslam/funcs
 import "github.com/hslam/funcs"
 ```
 ### Usage
-#### Here is how you use it:
 First create an instance of the funcs:
 ```
 Funcs:=funcs.New()
