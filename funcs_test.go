@@ -1,3 +1,7 @@
+// Copyright (c) 2019 Meng Huang (mhboy@outlook.com)
+// This package is licensed under a MIT license that can be found in the LICENSE file.
+
+// Package funcs implements function call by its name.
 package funcs
 
 import (
