@@ -6,6 +6,7 @@ package funcs
 
 import (
 	"errors"
+	"reflect"
 	"testing"
 )
 
@@ -113,9 +114,9 @@ func TestCall(t *testing.T) {
 	req := GetFuncIn("Arith.Divide", 0).(*ArithRequest)
 	req.A = 9
 	req.B = 0
-
+	f := GetFunc("Arith.Divide")
 	//res := &ArithResponse{}
-	res := GetFuncIn("Arith.Divide", 1).(*ArithResponse)
+	res := f.GetIn(1).(*ArithResponse)
 
 	if err := Call("", req, res); err.Error() != " is not existed" {
 		t.Errorf("Call Arith.Divide error: %s\n", err.Error())
@@ -132,5 +133,66 @@ func TestCall(t *testing.T) {
 	if err := Call("Arith.Multiply", req, res); err != nil {
 		t.Errorf("Call Arith.Divide error: %s\n", err.Error())
 		return
+	}
+	if err := f.Call("Arith.Multiply", req, res); err != nil {
+		t.Errorf("Call Arith.Divide error: %s\n", err.Error())
+		return
+	}
+}
+
+func TestValueCall(t *testing.T) {
+	Register(new(Arith))
+	f := GetFunc("Arith.Multiply")
+	//req := &ArithRequest{A: 9, B: 2}
+	req := f.GetValueIn(0).Interface().(*ArithRequest)
+	req.A = 9
+	req.B = 0
+
+	//res := &ArithResponse{}
+	res := GetFuncValueIn("Arith.Multiply", 1).Interface().(*ArithResponse)
+
+	if err := ValueCall("Arith.Multiply", ValueOf(req), ValueOf(res)); err != nil {
+		t.Errorf("Call Arith.Divide error: %s\n", err.Error())
+		return
+	}
+	if Value(ReflectValueOf(res)).Kind() != reflect.Ptr {
+		t.Error("Value.Kind() error\n")
+	}
+}
+
+func TestGetFuncValueIn(t *testing.T) {
+	Register(new(Arith))
+	if v := GetFuncValueIn("Arith.Multiply", 2); v != ZeroValue {
+		t.Errorf("GetFuncValueIn error")
+	}
+}
+
+func TestGetValueIn(t *testing.T) {
+	Register(new(Arith))
+	f := GetFunc("Arith.Multiply")
+	if v := f.GetValueIn(2); v != ZeroValue {
+		t.Errorf("GetValueIn error")
+	}
+}
+
+func TestGetIn(t *testing.T) {
+	Register(new(Arith))
+	f := GetFunc("Arith.Multiply")
+	if v := f.GetIn(2); v != nil {
+		t.Errorf("GetValueIn error")
+	}
+}
+
+func TestNumOut(t *testing.T) {
+	Register(new(Arith))
+	f := GetFunc("Arith.Divide")
+	if n := f.NumIn(); n != 2 {
+		t.Errorf("NumIn error")
+	}
+	if n := f.NumOut(); n != 1 {
+		t.Errorf("NumOut error")
+	}
+	if n := f.NumCalls(); n != 0 {
+		t.Errorf("NumCalls error")
 	}
 }
