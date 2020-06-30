@@ -237,7 +237,7 @@ func (f *Func) ValueCall(in ...Value) (err error) {
 func (f *Func) GetValueIn(i int) Value {
 	index := i + 1
 	if index < 1 || index > f.NumIn() {
-		return Value{}
+		return ZeroValue
 	}
 	return Value(reflect.New(f.methodType.In(index).Elem()))
 }
