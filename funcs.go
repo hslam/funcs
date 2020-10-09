@@ -62,7 +62,7 @@ func Register(obj interface{}) (err error) {
 
 // Register publishes the set of struct's methods in the Funcs.
 func (f *Funcs) Register(obj interface{}) (err error) {
-	return f.RegisterName("", obj)
+	return f.registerName("", obj, true)
 }
 
 // RegisterName is like Register but uses the provided name for the type
@@ -74,12 +74,16 @@ func RegisterName(name string, obj interface{}) error {
 // RegisterName is like Register but uses the provided name for the type
 // instead of the struct's concrete type.
 func (f *Funcs) RegisterName(name string, obj interface{}) (err error) {
+	return f.registerName(name, obj, false)
+}
+
+func (f *Funcs) registerName(name string, obj interface{}, structName bool) (err error) {
 	if obj == nil {
 		return ErrObject
 	}
 	tf := reflect.TypeOf(obj)
 	vf := reflect.ValueOf(obj)
-	if name == "" {
+	if structName {
 		name = reflect.Indirect(vf).Type().Name()
 	}
 	nm := vf.NumMethod()
