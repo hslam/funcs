@@ -1,6 +1,6 @@
 # funcs
 [![GoDoc](https://godoc.org/github.com/hslam/funcs?status.svg)](https://godoc.org/github.com/hslam/funcs)
-[![Build Status](https://travis-ci.org/hslam/funcs.svg?branch=master)](https://travis-ci.org/hslam/funcs)
+[![Build Status](https://github.com/hslam/funcs/workflows/build/badge.svg)](https://github.com/hslam/funcs/actions)
 [![codecov](https://codecov.io/gh/hslam/funcs/branch/master/graph/badge.svg)](https://codecov.io/gh/hslam/funcs)
 [![Go Report Card](https://goreportcard.com/badge/github.com/hslam/funcs?v=d5613e5)](https://goreportcard.com/report/github.com/hslam/funcs)
 [![GitHub release](https://img.shields.io/github/release/hslam/funcs.svg)](https://github.com/hslam/funcs/releases/latest)
