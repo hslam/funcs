@@ -19,11 +19,11 @@ import "github.com/hslam/funcs"
 ```
 ### Usage
 First create an instance of the funcs:
-```
+```go
 Funcs:=funcs.New()
 ```
 Then register your Struct:
-```
+```go
 type Service struct {
 }
 func (s *Service) Method(params ...interface{}) error {
@@ -35,23 +35,23 @@ Funcs.Register(new(Service))
 And then call your function by name.
 
 Function's Name Format : "StructName.MethodName"
-```
+```go
 if err := Funcs.Call("Service.Method", params...);err != nil {
     log.Fatalln("Call Service.Method error: ", err)
 }
 ```
 Logging.
-```
+```go
 Funcs.SetLog(true)
 ```
 if a function has 2 input parameters ,You can get the function's first input parameter and second input parameter.
-```
+```go
 Funcs.GetFuncIn("Service.Method",0)
 Funcs.GetFuncIn("Service.Method",1)
 //and so on
 ```
 #### Example
-```
+```go
 package main
 
 import (
@@ -124,7 +124,7 @@ num of args : 2
 This package is licensed under a MIT license (Copyright (c) 2019 Meng Huang)
 
 
-### Authors
+### Author
 funcs was written by Meng Huang.
 
 
