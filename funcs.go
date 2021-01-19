@@ -48,6 +48,7 @@ type Func struct {
 	numOut      int
 	errorOut    bool
 	count       int64
+	withContext int
 }
 
 // New returns a new blank Funcs instance.
@@ -56,11 +57,13 @@ func New() *Funcs {
 }
 
 // Register publishes the set of struct's methods in the DefalutFuncs.
+// If the function has a context.Context parameter, the context.Context must be the first parameter of the function.
 func Register(obj interface{}) (err error) {
 	return DefalutFuncs.RegisterName("", obj)
 }
 
 // Register publishes the set of struct's methods in the Funcs.
+// If the function has a context.Context parameter, the context.Context must be the first parameter of the function.
 func (f *Funcs) Register(obj interface{}) (err error) {
 	return f.registerName("", obj, true)
 }
@@ -101,11 +104,22 @@ func (f *Funcs) registerName(name string, obj interface{}, structName bool) (err
 		if Func.numOut > 0 && vf.Method(i).Type().Out(0).Name() == "error" {
 			Func.errorOut = true
 		}
+		if withContext(Func.methodType) {
+			Func.withContext = 1
+		}
 		callName := Func.structName + "." + Func.methodName
 		f.logPrintf("MethodIndex:%d,CallName:%s,NumIn:%d,NumOut:%d", i, callName, vf.Method(i).Type().NumIn(), vf.Method(i).Type().NumOut())
 		f.m.Store(callName, Func)
 	}
 	return nil
+}
+
+func withContext(methodType reflect.Type) (ctx bool) {
+	if methodType.NumIn() > 1 {
+		t := methodType.In(1)
+		ctx = t.PkgPath() == "context" && t.Name() == "Context"
+	}
+	return
 }
 
 // Call calls the function with the input arguments.
@@ -171,6 +185,7 @@ func (f *Funcs) GetFuncIn(name string, i int) interface{} {
 	if F == nil || index < 1 || index > F.NumIn() {
 		return nil
 	}
+	index += F.withContext
 	return reflect.New(F.methodType.In(index).Elem()).Interface()
 }
 
@@ -186,6 +201,7 @@ func (f *Funcs) GetFuncValueIn(name string, i int) Value {
 	if F == nil || index < 1 || index > F.NumIn() {
 		return ZeroValue
 	}
+	index += F.withContext
 	return Value(reflect.New(F.methodType.In(index).Elem()))
 }
 
@@ -237,12 +253,18 @@ func (f *Func) ValueCall(in ...Value) (err error) {
 	return
 }
 
+//WithContext returns whether calling with context.
+func (f *Func) WithContext() bool {
+	return f.withContext == 1
+}
+
 //GetValueIn returns the Value of index'th input parameter by index.
 func (f *Func) GetValueIn(i int) Value {
 	index := i + 1
 	if index < 1 || index > f.NumIn() {
 		return ZeroValue
 	}
+	index += f.withContext
 	return Value(reflect.New(f.methodType.In(index).Elem()))
 }
 
@@ -252,6 +274,7 @@ func (f *Func) GetIn(i int) interface{} {
 	if index < 1 || index > f.NumIn() {
 		return nil
 	}
+	index += f.withContext
 	return reflect.New(f.methodType.In(index).Elem()).Interface()
 }
 

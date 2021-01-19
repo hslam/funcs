@@ -5,6 +5,7 @@
 package funcs
 
 import (
+	"context"
 	"errors"
 	"reflect"
 	"testing"
@@ -29,6 +30,11 @@ type Arith struct {
 
 //Multiply is the Arith's Method.
 func (a *Arith) Multiply(req *ArithRequest, res *ArithResponse) {
+	res.Pro = req.A * req.B
+}
+
+//MultiplyWithContext is the Arith's Method with context.
+func (a *Arith) MultiplyWithContext(ctx context.Context, req *ArithRequest, res *ArithResponse) {
 	res.Pro = req.A * req.B
 }
 
@@ -131,11 +137,11 @@ func TestCall(t *testing.T) {
 		return
 	}
 	if err := Call("Arith.Multiply", req, res); err != nil {
-		t.Errorf("Call Arith.Divide error: %s\n", err.Error())
+		t.Errorf("Call Arith.Multiply error: %s\n", err.Error())
 		return
 	}
 	if err := f.Call("Arith.Multiply", req, res); err != nil {
-		t.Errorf("Call Arith.Divide error: %s\n", err.Error())
+		t.Errorf("Call Arith.Multiply error: %s\n", err.Error())
 		return
 	}
 }
@@ -152,11 +158,35 @@ func TestValueCall(t *testing.T) {
 	res := GetFuncValueIn("Arith.Multiply", 1).Interface().(*ArithResponse)
 
 	if err := ValueCall("Arith.Multiply", ValueOf(req), ValueOf(res)); err != nil {
-		t.Errorf("Call Arith.Divide error: %s\n", err.Error())
+		t.Errorf("Call Arith.Multiply error: %s\n", err.Error())
 		return
 	}
 	if Value(ReflectValueOf(res)).Kind() != reflect.Ptr {
 		t.Error("Value.Kind() error\n")
+	}
+}
+
+func TestValueCallWithContext(t *testing.T) {
+	Register(new(Arith))
+	f := GetFunc("Arith.MultiplyWithContext")
+	if !f.WithContext() {
+		t.Error()
+	}
+	//req := &ArithRequest{A: 9, B: 2}
+	req := f.GetValueIn(0).Interface().(*ArithRequest)
+	req.A = 9
+	req.B = 0
+
+	//res := &ArithResponse{}
+	res := GetFuncValueIn("Arith.MultiplyWithContext", 1).Interface().(*ArithResponse)
+
+	if err := ValueCall("Arith.MultiplyWithContext", ValueOf(context.Background()), ValueOf(req), ValueOf(res)); err != nil {
+		t.Errorf("Call Arith.MultiplyWithContext error: %s\n", err.Error())
+		return
+	}
+	if err := f.ValueCall(ValueOf(context.Background()), ValueOf(req), ValueOf(res)); err != nil {
+		t.Errorf("Call Arith.MultiplyWithContext error: %s\n", err.Error())
+		return
 	}
 }
 
