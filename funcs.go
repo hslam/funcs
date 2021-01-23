@@ -59,7 +59,7 @@ func New() *Funcs {
 // Register publishes the set of struct's methods in the DefalutFuncs.
 // If the function has a context.Context parameter, the context.Context must be the first parameter of the function.
 func Register(obj interface{}) (err error) {
-	return DefalutFuncs.RegisterName("", obj)
+	return DefalutFuncs.Register(obj)
 }
 
 // Register publishes the set of struct's methods in the Funcs.
