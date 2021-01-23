@@ -51,7 +51,9 @@ func TestDefalutFuncs(t *testing.T) {
 	SetLog(true)
 	RegisterName("Arith", new(Arith))
 	Register(new(Arith))
-
+	if len(Services()) != 3 {
+		t.Error(len(Services()))
+	}
 	f := GetFunc("Arith.Divide")
 	if f.NumIn() != 2 {
 		t.Errorf("%d\n", f.NumIn())

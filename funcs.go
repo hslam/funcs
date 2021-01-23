@@ -122,6 +122,21 @@ func withContext(methodType reflect.Type) (ctx bool) {
 	return
 }
 
+// Services returns registered services.
+func Services() []string {
+	return DefalutFuncs.Services()
+}
+
+// Services returns registered services.
+func (f *Funcs) Services() []string {
+	var s []string
+	f.m.Range(func(key, value interface{}) bool {
+		s = append(s, key.(string))
+		return true
+	})
+	return s
+}
+
 // Call calls the function with the input arguments.
 // For example, Call("v",arg1,arg2) represents the Go call v(arg1,arg2).
 // Call panics if v's Kind is not Func.
