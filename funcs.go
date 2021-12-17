@@ -49,6 +49,9 @@ type Func struct {
 	errorOut    bool
 	count       int64
 	withContext int
+	isStream    bool
+	sendType    reflect.Type
+	recvType    reflect.Type
 }
 
 // New returns a new blank Funcs instance.
@@ -104,10 +107,15 @@ func (f *Funcs) registerName(name string, obj interface{}, structName bool) (err
 		if Func.numOut > 0 && vf.Method(i).Type().Out(0).Name() == "error" {
 			Func.errorOut = true
 		}
+		callName := Func.structName + "." + Func.methodName
 		if withContext(Func.methodType) {
 			Func.withContext = 1
+		} else if sendType, recvType, ok := isStream(Func.methodType); ok {
+			Func.isStream = true
+			Func.sendType = sendType
+			Func.recvType = recvType
+			f.logPrintf("MethodIndex:%d,allName:%s,is stream", i, callName)
 		}
-		callName := Func.structName + "." + Func.methodName
 		f.logPrintf("MethodIndex:%d,CallName:%s,NumIn:%d,NumOut:%d", i, callName, vf.Method(i).Type().NumIn(), vf.Method(i).Type().NumOut())
 		f.m.Store(callName, Func)
 	}
@@ -118,6 +126,51 @@ func withContext(methodType reflect.Type) (ctx bool) {
 	if methodType.NumIn() > 1 {
 		t := methodType.In(1)
 		ctx = t.PkgPath() == "context" && t.Name() == "Context"
+	}
+	return
+}
+
+// Stream defines the message stream interface.
+type Stream interface {
+	// WriteMessage writes a message to the stream.
+	WriteMessage(m interface{}) error
+	// ReadMessage reads a single message from the stream.
+	ReadMessage(m interface{}) error
+	// Close closes the stream.
+	Close() error
+}
+
+var stream = (*Stream)(nil)
+var streamType = reflect.TypeOf(stream).Elem()
+
+func isError(t reflect.Type) bool {
+	return t.String() == "error"
+}
+
+const (
+	write   = "Write"
+	read    = "Read"
+	connect = "Connect"
+)
+
+func isStream(methodType reflect.Type) (writeType reflect.Type, readType reflect.Type, ok bool) {
+	if methodType.NumIn() == 2 {
+		t := methodType.In(1)
+		if t.NumMethod() >= 3 {
+			writeMethod, writeOK := t.MethodByName(write)
+			readMethod, readOK := t.MethodByName(read)
+			connectMethod, connectOK := t.MethodByName(connect)
+			if writeOK && writeMethod.Type.NumIn() > 1 && writeMethod.Type.NumOut() == 1 && isError(writeMethod.Type.Out(0)) &&
+				readOK && readMethod.Type.NumIn() > 1 && readMethod.Type.NumOut() == 1 && isError(readMethod.Type.Out(0)) &&
+				connectOK && connectMethod.Type.NumIn() > 1 && connectMethod.Type.NumOut() == 1 && isError(connectMethod.Type.Out(0)) {
+				writeType = writeMethod.Type.In(1)
+				readType = readMethod.Type.In(1)
+				connectType := connectMethod.Type.In(1)
+				if connectType.Implements(streamType) {
+					ok = true
+				}
+			}
+		}
 	}
 	return
 }
@@ -266,6 +319,27 @@ func (f *Func) ValueCall(in ...Value) (err error) {
 		}
 	}
 	return
+}
+
+//IsStream returns whether is stream.
+func (f *Func) IsStream() bool {
+	return f.isStream
+}
+
+//GetSendValue returns the send Value.
+func (f *Func) GetSendValue() Value {
+	if f.isStream {
+		return Value(reflect.New(f.sendType.Elem()))
+	}
+	return ZeroValue
+}
+
+//GetRecvValue returns the recv Value.
+func (f *Func) GetRecvValue() Value {
+	if f.isStream {
+		return Value(reflect.New(f.recvType.Elem()))
+	}
+	return ZeroValue
 }
 
 //WithContext returns whether calling with context.
