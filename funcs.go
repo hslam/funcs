@@ -135,7 +135,7 @@ type Stream interface {
 	// WriteMessage writes a message to the stream.
 	WriteMessage(m interface{}) error
 	// ReadMessage reads a single message from the stream.
-	ReadMessage(m interface{}) error
+	ReadMessage(b []byte, m interface{}) error
 	// Close closes the stream.
 	Close() error
 }
@@ -161,10 +161,10 @@ func isStream(methodType reflect.Type) (writeType reflect.Type, readType reflect
 			readMethod, readOK := t.MethodByName(read)
 			connectMethod, connectOK := t.MethodByName(connect)
 			if writeOK && writeMethod.Type.NumIn() > 1 && writeMethod.Type.NumOut() == 1 && isError(writeMethod.Type.Out(0)) &&
-				readOK && readMethod.Type.NumIn() > 1 && readMethod.Type.NumOut() == 1 && isError(readMethod.Type.Out(0)) &&
+				readOK && readMethod.Type.NumIn() > 2 && readMethod.Type.NumOut() == 1 && isError(readMethod.Type.Out(0)) &&
 				connectOK && connectMethod.Type.NumIn() > 1 && connectMethod.Type.NumOut() == 1 && isError(connectMethod.Type.Out(0)) {
 				writeType = writeMethod.Type.In(1)
-				readType = readMethod.Type.In(1)
+				readType = readMethod.Type.In(2)
 				connectType := connectMethod.Type.In(1)
 				if connectType.Implements(streamType) {
 					ok = true
