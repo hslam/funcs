@@ -46,7 +46,7 @@ type Func struct {
 	methodFunc  reflect.Value
 	numIn       int
 	numOut      int
-	errorOut    bool
+	errorOut    int
 	count       int64
 	withContext int
 	isStream    bool
@@ -104,8 +104,12 @@ func (f *Funcs) registerName(name string, obj interface{}, structName bool) (err
 		}
 		Func.numIn = vf.Method(i).Type().NumIn()
 		Func.numOut = vf.Method(i).Type().NumOut()
-		if Func.numOut > 0 && vf.Method(i).Type().Out(0).Name() == "error" {
-			Func.errorOut = true
+		if Func.numOut > 0 {
+			if vf.Method(i).Type().Out(0).Name() == "error" {
+				Func.errorOut = 1
+			} else if vf.Method(i).Type().Out(1).Name() == "error" {
+				Func.errorOut = 2
+			}
 		}
 		callName := Func.structName + "." + Func.methodName
 		if withContext(Func.methodType) {
@@ -209,16 +213,17 @@ func (f *Funcs) Call(name string, params ...interface{}) (err error) {
 	for k, param := range params {
 		in[k] = Value(reflect.ValueOf(param))
 	}
-	return f.ValueCall(name, in...)
+	_, err = f.ValueCall(name, in...)
+	return
 }
 
 // ValueCall calls the function with the Value of input arguments.
-func ValueCall(name string, in ...Value) (err error) {
+func ValueCall(name string, in ...Value) (ret Value, err error) {
 	return DefalutFuncs.ValueCall(name, in...)
 }
 
 // ValueCall calls the function with the Value of input arguments.
-func (f *Funcs) ValueCall(name string, in ...Value) (err error) {
+func (f *Funcs) ValueCall(name string, in ...Value) (ret Value, err error) {
 	var F *Func
 	if F = f.GetFunc(name); F == nil {
 		err = errors.New(name + " is not existed")
@@ -295,12 +300,12 @@ func (f *Func) Call(params ...interface{}) (err error) {
 	for k, param := range params {
 		in[k] = Value(reflect.ValueOf(param))
 	}
-	f.ValueCall(in...)
+	_, err = f.ValueCall(in...)
 	return
 }
 
 // ValueCall calls the function with the Value of input arguments.
-func (f *Func) ValueCall(in ...Value) (err error) {
+func (f *Func) ValueCall(in ...Value) (ret Value, err error) {
 	if len(in) != f.NumIn() {
 		err = ErrNumParams
 		return
@@ -313,10 +318,16 @@ func (f *Func) ValueCall(in ...Value) (err error) {
 		ins[k+1] = reflect.Value(param)
 	}
 	vs := f.methodFunc.Call(ins)
-	if f.errorOut {
+	if f.errorOut == 1 {
 		if !vs[0].IsNil() {
-			return vs[0].Interface().(error)
+			err = vs[0].Interface().(error)
 		}
+		ret = ZeroValue
+	} else if f.errorOut == 2 {
+		if !vs[1].IsNil() {
+			err = vs[1].Interface().(error)
+		}
+		ret = Value(vs[0])
 	}
 	return
 }
@@ -345,6 +356,11 @@ func (f *Func) GetRecvValue() Value {
 //WithContext returns whether calling with context.
 func (f *Func) WithContext() bool {
 	return f.withContext == 1
+}
+
+//ReturnOut returns whether to return a result.
+func (f *Func) ReturnOut() bool {
+	return f.errorOut == 2
 }
 
 //GetValueIn returns the Value of index'th input parameter by index.

@@ -33,8 +33,16 @@ func (a *Arith) Multiply(req *ArithRequest, res *ArithResponse) {
 }
 
 //MultiplyWithContext is the Arith's Method with context.
-func (a *Arith) MultiplyWithContext(ctx context.Context, req *ArithRequest, res *ArithResponse) {
+func (a *Arith) MultiplyWithContext(ctx context.Context, req *ArithRequest, res *ArithResponse) error {
 	res.Pro = req.A * req.B
+	return nil
+}
+
+//MultiplyReturnOut is the Arith's Method that returns a result.
+func (a *Arith) MultiplyReturnOut(ctx context.Context, req *ArithRequest) (*ArithResponse, error) {
+	var res ArithResponse
+	res.Pro = req.A * req.B
+	return &res, nil
 }
 
 //Divide is the Arith's Method.
@@ -50,7 +58,7 @@ func TestDefalutFuncs(t *testing.T) {
 	SetLog(true)
 	RegisterName("Arith", new(Arith))
 	Register(new(Arith))
-	if len(Services()) != 3 {
+	if len(Services()) != 4 {
 		t.Error(len(Services()))
 	}
 	f := GetFunc("Arith.Divide")
@@ -134,14 +142,14 @@ func TestCall(t *testing.T) {
 		return
 	}
 	if err := Call("Arith.Divide", req, res); err.Error() != "divide by zero" {
-		t.Errorf("Call Arith.Divide error: %s\n", err.Error())
+		t.Errorf("Call Arith.Divide error: %s\n", err)
+		return
+	}
+	if err := f.Call(req, res); err.Error() != "divide by zero" {
+		t.Errorf("Call Arith.Divide error: %s\n", err)
 		return
 	}
 	if err := Call("Arith.Multiply", req, res); err != nil {
-		t.Errorf("Call Arith.Multiply error: %s\n", err.Error())
-		return
-	}
-	if err := f.Call("Arith.Multiply", req, res); err != nil {
 		t.Errorf("Call Arith.Multiply error: %s\n", err.Error())
 		return
 	}
@@ -158,7 +166,7 @@ func TestValueCall(t *testing.T) {
 	//res := &ArithResponse{}
 	res := GetFuncValueIn("Arith.Multiply", 1).Interface().(*ArithResponse)
 
-	if err := ValueCall("Arith.Multiply", ValueOf(req), ValueOf(res)); err != nil {
+	if _, err := ValueCall("Arith.Multiply", ValueOf(req), ValueOf(res)); err != nil {
 		t.Errorf("Call Arith.Multiply error: %s\n", err.Error())
 		return
 	}
@@ -176,18 +184,53 @@ func TestValueCallWithContext(t *testing.T) {
 	//req := &ArithRequest{A: 9, B: 2}
 	req := f.GetValueIn(0).Interface().(*ArithRequest)
 	req.A = 9
-	req.B = 0
+	req.B = 1
 
 	//res := &ArithResponse{}
 	res := GetFuncValueIn("Arith.MultiplyWithContext", 1).Interface().(*ArithResponse)
 
-	if err := ValueCall("Arith.MultiplyWithContext", ValueOf(context.Background()), ValueOf(req), ValueOf(res)); err != nil {
+	if _, err := ValueCall("Arith.MultiplyWithContext", ValueOf(context.Background()), ValueOf(req), ValueOf(res)); err != nil {
 		t.Errorf("Call Arith.MultiplyWithContext error: %s\n", err.Error())
 		return
 	}
-	if err := f.ValueCall(ValueOf(context.Background()), ValueOf(req), ValueOf(res)); err != nil {
+	if _, err := f.ValueCall(ValueOf(context.Background()), ValueOf(req), ValueOf(res)); err != nil {
 		t.Errorf("Call Arith.MultiplyWithContext error: %s\n", err.Error())
 		return
+	}
+}
+
+func TestValueCallReturnOut(t *testing.T) {
+	Register(new(Arith))
+	f := GetFunc("Arith.MultiplyReturnOut")
+	if !f.ReturnOut() {
+		t.Error()
+	}
+	//req := &ArithRequest{A: 9, B: 2}
+	req := f.GetValueIn(0).Interface().(*ArithRequest)
+	req.A = 9
+	req.B = 2
+	//res := &ArithResponse{}
+	if out, err := ValueCall("Arith.MultiplyReturnOut", ValueOf(context.Background()), ValueOf(req)); err != nil {
+		t.Errorf("Call Arith.MultiplyReturnOut error: %s\n", err.Error())
+	} else {
+		if out == ZeroValue {
+			t.Error()
+		}
+		res := out.Interface().(*ArithResponse)
+		if res.Pro != req.A*req.B {
+			t.Errorf("%d * %d, pro is %d\n", req.A, req.B, res.Pro)
+		}
+	}
+	if out, err := f.ValueCall(ValueOf(context.Background()), ValueOf(req)); err != nil {
+		t.Errorf("Call Arith.MultiplyReturnOut error: %s\n", err.Error())
+	} else {
+		if out == ZeroValue {
+			t.Error()
+		}
+		res := out.Interface().(*ArithResponse)
+		if res.Pro != req.A*req.B {
+			t.Errorf("%d * %d, pro is %d\n", req.A, req.B, res.Pro)
+		}
 	}
 }
 
